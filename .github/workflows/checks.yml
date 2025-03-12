@@ -23,8 +23,9 @@ jobs:
           --revision "${REVISION}"
     - name: Checking fornew findings
       env:
-        FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
         BASE_REVISION: ${{ github.event.pull_request.base.sha }}
+        FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+        REVISION: ${{ github.event.pull_request.head.sha }}
       run: |
         echo "::warning::If specified errors are detected, failed jobs will be retried by ${RUN_URL}"
 
