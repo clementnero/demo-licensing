@@ -22,6 +22,7 @@ jobs:
           --branch "${BRANCH}" \
           --revision "${REVISION}"
     - name: Checking fornew findings
+      id: check
       env:
         BASE_REVISION: ${{ github.event.pull_request.base.sha }}
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
@@ -32,7 +33,12 @@ jobs:
         fossa test . \
             --revision "${REVISION}"
             --diff "${BASE_REVISION}"
-        
+    - if: steps.check.conclusion == 'failure'
+      env:
+        BASE_REVISION: ${{ github.event.pull_request.base.sha }}
+        FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+        REVISION: ${{ github.event.pull_request.head.sha }}
+      run: |
         results=$(
             fossa test . \
                 --revision "${REVISION}"
@@ -40,4 +46,5 @@ jobs:
                 --format JSON 2>/dev/null
         )
         echo "${results}" | jq .
-    
+
+            
