@@ -42,6 +42,7 @@ jobs:
                 --revision "${REVISION}" \
                 --diff "${BASE_REVISION}" \
                 --format json 2>/dev/null | \
-            jq -r '[.issues[].revisionId] | unique | .[]'
+            jq -cr '[.issues[].revisionId] | unique | .[]'
         )
-        echo "::error:: lincense issues found for the following dependencies: ${dependencies}"
+        echo "::error:: lincense issues for dependencies: ${dependencies}"
+       shell: bash
