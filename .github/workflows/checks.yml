@@ -15,9 +15,10 @@ jobs:
     - name: FOSS analysis
       env:
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+        BRANCH: ${{ github.head_ref }}
       run: |
         env
-        fossa analyze . --strict --branch ${{ github.ref_name }}
+        fossa analyze . --strict --branch "${BRANCH}"
     - name: Checking fornew findings
       env:
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
