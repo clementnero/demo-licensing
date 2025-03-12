@@ -1,4 +1,4 @@
-name: Checks
+name: License Check
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ jobs:
       # TODO: Add fossa-cli installation script here
       run: |
         curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
-    - name: Analyse licenses of project depdendencies
+    - name: Analyse project dependencies
       env:
         BRANCH: ${{ github.head_ref }}
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
@@ -21,7 +21,7 @@ jobs:
         fossa analyze . --strict \
           --branch "${BRANCH}" \
           --revision "${REVISION}"
-    - name: Check for new license compliance issues vs ${{ github.event.pull_request.base.label }}
+    - name: Check for new compliance issues (vs base branch)
       id: check
       env:
         BASE_REVISION: ${{ github.event.pull_request.base.sha }}
@@ -45,4 +45,5 @@ jobs:
                 --format json 2>/dev/null | \
             jq -r '[.issues[].revisionId] | unique | join(", ")'
         )
-        echo "::error:: review new issues in fossa.com (links in logs below) lfor dependencies: ${dependencies}"
+        echo "::error line=1:: findings are to be review in fossa.com (more in logs) for deps: ${dependencies}"
+        echo "::error line=2:: findings are to be review in fossa.com (more in logs) for deps: ${dependencies}"
