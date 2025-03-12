@@ -9,18 +9,18 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-
     - name: Install fossa
       run: |
         curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
     - name: FOSS analysis
       env:
-        FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
         BRANCH: ${{ github.head_ref }}
+        FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+        REVISION: ${{ github.sha }}
       run: |
-        fossa analyze . --strict --branch "${BRANCH}"
+        fossa analyze . --strict \
+          --branch "${BRANCH}" \
+          --revision ${REVISION}
     - name: Checking fornew findings
       env:
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
