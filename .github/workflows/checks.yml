@@ -31,7 +31,8 @@ jobs:
         fossa test . \
             --revision "${REVISION}" \
             --diff "${BASE_REVISION}"
-    - if: failure() && steps.check.conclusion == 'failure'
+    - name: New licensing issues found
+      if: failure() && steps.check.conclusion == 'failure'
       env:
         BASE_REVISION: ${{ github.event.pull_request.base.sha }}
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
@@ -42,6 +43,6 @@ jobs:
                 --revision "${REVISION}" \
                 --diff "${BASE_REVISION}" \
                 --format json 2>/dev/null | \
-            jq -r '[.issues[].revisionId] | unique | .[]'
+            jq -r '[.issues[].revisionId] | unique | join(", ")'
         )
-        echo "::error:: lincense issues found for the following dependencies: ${dependencies}"
+        echo "::error:: please check below license issues for the following dependencies: ${dependencies}"
