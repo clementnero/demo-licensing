@@ -46,4 +46,4 @@ jobs:
                 --format json 2>/dev/null | \
             jq -r '[.issues[].revisionId] | unique | .[]'
         )
-        echo "::error lincense findings: ${findings}"
+        echo "::warning::lincense findings: ${findings}"
