@@ -44,12 +44,14 @@ jobs:
                 --diff "${BASE_REVISION}" \
                 --format json 2>/dev/null
         )
-        dependencies=$(
-            echo "${results}" \ |
-                jq -r '[.issues[].dependency] | unique | .[]'
-        )
-        findings=$(
-            echo "${results}" \ |
-                jq -r '.issues | length'
-        )
-        echo "::error:: ${findings} lincense issues found for the following dependencies: ${dependencies}"
+        echo "${results}" | jq -r '[.issues[].dependency] | unique | .[]'
+        echo "${results}" | jq -r '.issues | length'
+        # dependencies=$(
+        #     echo "${results}" \ |
+        #         jq -r '[.issues[].dependency] | unique | .[]'
+        # )
+        # findings=$(
+        #     echo "${results}" \ |
+        #         jq -r '.issues | length'
+        # )
+        # echo "::error:: ${findings} lincense issues found for the following dependencies: ${dependencies}"
