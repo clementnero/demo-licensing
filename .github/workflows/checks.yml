@@ -43,6 +43,6 @@ jobs:
                 --revision "${REVISION}" \
                 --diff "${BASE_REVISION}" \
                 --format json 2>/dev/null | \
-            jq -r '[.issues[].revisionId] | unique | join(", ")'
+            jq -r '[.issues[].revisionId] | unique | join("%0A")'
         )
         echo "::error file=,line=1::findings are to be review in fossa.com (more in logs) for dependencies:%0A ${dependencies}"
