@@ -43,7 +43,7 @@ jobs:
             fossa test . \
                 --revision "${REVISION}" \
                 --diff "${BASE_REVISION}" \
-                --format json | \
-            jq -c '[.issues[].revisionId] | unique | .[]'
+                --format json 2>/dev/null | \
+            jq -r '[.issues[].revisionId] | unique | .[]'
         )
-        echo $findings
+        echo "::error lincense findings: ${findings}"
