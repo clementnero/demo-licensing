@@ -4,12 +4,15 @@ on:
   pull_request:
 
 jobs:
-  build:
+  check:
+    env:
+      BASE_REVISION: ${{ github.event.pull_request.base.sha }}
+      HEAD_REVISION: ${{ github.event.pull_request.head.sha }}
+    # TODO: use self-hosted runner if possible
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Install FOSSA CLI
-      # Download the latest FOSSA CLI release
       env:
         # renovate: datasource=github-releases depName=fossas/fossa-cli
         FOSSA_CLI_VERSION: 3.10.2
@@ -24,33 +27,29 @@ jobs:
       env:
         BRANCH: ${{ github.head_ref }}
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
-        REVISION: ${{ github.event.pull_request.head.sha }}
       run: |
-        fossa analyze . --strict \
+        fossa analyze . \
+          --strict \
           --branch "${BRANCH}" \
-          --revision "${REVISION}"
-    - name: Check for new license compliance issues (vs base branch)
+          --revision "${HEAD_REVISION}"
+    - name: Check for new license compliance issues (vs base)
       id: check
       env:
-        BASE_REVISION: ${{ github.event.pull_request.base.sha }}
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
-        REVISION: ${{ github.event.pull_request.head.sha }}
       run: |
         fossa test . \
-            --revision "${REVISION}" \
-            --diff "${BASE_REVISION}"
+            --diff "${BASE_REVISION}" \
+            --revision "${HEAD_REVISION}"
     - name: New license issue(s) found
       if: failure() && steps.check.conclusion == 'failure'
       env:
-        BASE_REVISION: ${{ github.event.pull_request.base.sha }}
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
-        REVISION: ${{ github.event.pull_request.head.sha }}
       run: |
         dependencies=$(
             fossa test . \
-                --revision "${REVISION}" \
                 --diff "${BASE_REVISION}" \
+                --revision "${HEAD_REVISION}" \
                 --format json 2>/dev/null | \
             jq -r '[.issues[].revisionId] | unique | join("%0A")'
         )
-        echo "::error file=,line=1::Review findings on fossa.com (more details in logs) for the relevant dependencies:%0A ${dependencies}"
+        echo "::error file=,line=1::Review findings on fossa.com (more details in logs) for the following dependencies:%0A${dependencies}"
