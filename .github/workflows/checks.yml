@@ -31,7 +31,7 @@ jobs:
         echo "::warning::If specified errors are detected, failed jobs will be retried by ${RUN_URL}"
 
         fossa test . \
-            --revision "${REVISION}"
+            --revision "${REVISION}" \
             --diff "${BASE_REVISION}"
     - if: failure() && steps.check.conclusion == 'failure'
       env:
@@ -40,8 +40,8 @@ jobs:
         REVISION: ${{ github.event.pull_request.head.sha }}
       run: |
         fossa test . \
-            --revision "${REVISION}"
-            --diff "${BASE_REVISION}"
+            --revision "${REVISION}" \
+            --diff "${BASE_REVISION}" \
             --format json
 
             
