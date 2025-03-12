@@ -45,4 +45,4 @@ jobs:
             jq -cr '[.issues[].revisionId] | unique | .[]'
         )
         echo "::error:: lincense issues for dependencies: ${dependencies}"
-       shell: bash
+      shell: bash
