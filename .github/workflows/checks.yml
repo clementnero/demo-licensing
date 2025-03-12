@@ -45,5 +45,5 @@ jobs:
                 --format json 2>/dev/null | \
             jq -r '[.issues[].revisionId] | unique | join(", ")'
         )
-        echo "::error line=1:: findings are to be review in fossa.com (more in logs) for deps: ${dependencies}"
-        echo "::error line=2:: findings are to be review in fossa.com (more in logs) for deps: ${dependencies}"
+        echo "::error file=,line=1::findings are to be review in fossa.com (more in logs) for deps: ${dependencies}"
+        echo "::error file=,line=2::findings are to be review in fossa.com (more in logs) for deps: ${dependencies}"
