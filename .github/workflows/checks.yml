@@ -16,7 +16,7 @@ jobs:
       env:
         BRANCH: ${{ github.head_ref }}
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
-        REVISION: ${{ github.sha }}
+        REVISION: ${{ github.event.pull_request.head.sha }}
       run: |
         fossa analyze . --strict \
           --branch "${BRANCH}" \
