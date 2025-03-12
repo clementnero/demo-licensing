@@ -9,6 +9,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
     - name: Install fossa
       run: |
         curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
@@ -17,10 +20,10 @@ jobs:
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
         BRANCH: ${{ github.head_ref }}
       run: |
-        env
         fossa analyze . --strict --branch "${BRANCH}"
     - name: Checking fornew findings
       env:
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+        BASE_REVISION: ${{ github.event.pull_request.base.sha }}
       run: |
-        fossa test
+        fossa test . --diff "${BASE_REVISION}"
