@@ -39,9 +39,11 @@ jobs:
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
         REVISION: ${{ github.event.pull_request.head.sha }}
       run: |
-        fossa test . \
-            --revision "${REVISION}" \
-            --diff "${BASE_REVISION}" \
-            --format json
-
-            
+        findings=$(
+            fossa test . \
+                --revision "${REVISION}" \
+                --diff "${BASE_REVISION}" \
+                --format json | \
+            jq -c '[.issues[].revisionId] | unique | .[]'
+        )
+        echo $findings
