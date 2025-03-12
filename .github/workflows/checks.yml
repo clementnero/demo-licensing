@@ -7,12 +7,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Install fossa
+    - uses: actions/checkout@v2
+    - name: Install FOSSA CLI
+      # TODO: Add fossa-cli installation script here
       run: |
         curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
-    - name: FOSS analysis
+    - name: Analyse licenses of project depdendencies
       env:
         BRANCH: ${{ github.head_ref }}
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
@@ -21,7 +21,7 @@ jobs:
         fossa analyze . --strict \
           --branch "${BRANCH}" \
           --revision "${REVISION}"
-    - name: Checking fornew findings
+    - name: Check for new license compliance issues vs ${{ github.event.pull_request.base.label }}
       id: check
       env:
         BASE_REVISION: ${{ github.event.pull_request.base.sha }}
@@ -31,7 +31,7 @@ jobs:
         fossa test . \
             --revision "${REVISION}" \
             --diff "${BASE_REVISION}"
-    - name: New licensing issues found
+    - name: New compliance issues found
       if: failure() && steps.check.conclusion == 'failure'
       env:
         BASE_REVISION: ${{ github.event.pull_request.base.sha }}
@@ -45,4 +45,4 @@ jobs:
                 --format json 2>/dev/null | \
             jq -r '[.issues[].revisionId] | unique | join(", ")'
         )
-        echo "::error:: please check below license issues for the following dependencies: ${dependencies}"
+        echo "::error:: review new issues in fossa.com (links in logs below) lfor dependencies: ${dependencies}"
