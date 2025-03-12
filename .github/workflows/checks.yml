@@ -43,7 +43,7 @@ jobs:
             fossa test . \
                 --revision "${REVISION}"
                 --diff "${BASE_REVISION}"
-                --format JSON 2>/dev/null
+                --format json 2>/dev/null
         )
         echo "${results}" | jq .
 
