@@ -9,9 +9,17 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install FOSSA CLI
-      # TODO: Add fossa-cli installation script here
+      # Download the latest FOSSA CLI release
+      env:
+        # renovate: datasource=github-releases depName=fossas/fossa-cli
+        FOSSA_CLI_VERSION: 3.10.2
       run: |
-        curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
+        curl -L \
+            https://github.com/fossas/fossa-cli/releases/download/v${FOSSA_CLI_VERSION}/fossa_${FOSSA_CLI_VERSION}_linux_amd64.tar.gz \
+            -o fossa.tar.gz
+        tar -xzf fossa.tar.gz fossa
+        sudo mv fossa /usr/local/bin/fossa
+        rm fossa.tar.gz
     - name: Analyse project dependencies
       env:
         BRANCH: ${{ github.head_ref }}
@@ -21,7 +29,7 @@ jobs:
         fossa analyze . --strict \
           --branch "${BRANCH}" \
           --revision "${REVISION}"
-    - name: Check for new compliance issues (vs base branch)
+    - name: Check for new license compliance issues (vs base branch)
       id: check
       env:
         BASE_REVISION: ${{ github.event.pull_request.base.sha }}
@@ -31,7 +39,7 @@ jobs:
         fossa test . \
             --revision "${REVISION}" \
             --diff "${BASE_REVISION}"
-    - name: New compliance issues found
+    - name: New license issue(s) found
       if: failure() && steps.check.conclusion == 'failure'
       env:
         BASE_REVISION: ${{ github.event.pull_request.base.sha }}
@@ -45,4 +53,4 @@ jobs:
                 --format json 2>/dev/null | \
             jq -r '[.issues[].revisionId] | unique | join("%0A")'
         )
-        echo "::error file=,line=1::findings are to be review in fossa.com (more in logs) for dependencies:%0A ${dependencies}"
+        echo "::error file=,line=1::Review findings on fossa.com (more details in logs) for the relevant dependencies:%0A ${dependencies}"
