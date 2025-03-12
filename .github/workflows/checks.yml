@@ -16,5 +16,5 @@ jobs:
       env:
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
       run: |
-        fossa analyse
+        fossa analyze
         fossa test
