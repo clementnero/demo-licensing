@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  analysis:
+  analyse:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
         rm fossa.tar.gz
     - name: Analyse project dependencies
       env:
-        BRANCH: ${{ github.head_ref }}
+        BRANCH: ${{ github.head_ref || github.ref_name }}
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
         HEAD_REVISION: ${{ github.sha }}
       run: |
