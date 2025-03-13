@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  check:
+  analysis:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -25,6 +25,7 @@ jobs:
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
         HEAD_REVISION: ${{ github.sha }}
       run: |
+        env
         fossa analyze . \
           --strict \
           --branch "${BRANCH}" \
