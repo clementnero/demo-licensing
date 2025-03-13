@@ -5,6 +5,7 @@ on:
 
 jobs:
   analyse:
+    name: Analyse dependencies
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -19,7 +20,7 @@ jobs:
         tar -xzf fossa.tar.gz fossa
         sudo mv fossa /usr/local/bin/fossa
         rm fossa.tar.gz
-    - name: Analyse project dependencies
+    - name: Run depdendency analysis
       env:
         BRANCH: ${{ github.head_ref || github.ref_name }}
         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
