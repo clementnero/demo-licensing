@@ -1,0 +1,31 @@
+name: License Check
+
+on:
+  push:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install FOSSA CLI
+      env:
+        # renovate: datasource=github-releases depName=fossas/fossa-cli
+        FOSSA_CLI_VERSION: 3.10.2
+      run: |
+        curl -L \
+            https://github.com/fossas/fossa-cli/releases/download/v${FOSSA_CLI_VERSION}/fossa_${FOSSA_CLI_VERSION}_linux_amd64.tar.gz \
+            -o fossa.tar.gz
+        tar -xzf fossa.tar.gz fossa
+        sudo mv fossa /usr/local/bin/fossa
+        rm fossa.tar.gz
+    - name: Analyse project dependencies
+      env:
+        BRANCH: ${{ github.head_ref }}
+        FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+        HEAD_REVISION: ${{ github.sha }}
+      run: |
+        fossa analyze . \
+          --strict \
+          --branch "${BRANCH}" \
+          --revision "${HEAD_REVISION}"
