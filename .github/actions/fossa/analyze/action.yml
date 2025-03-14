@@ -16,22 +16,8 @@ runs:
   using: composite
   steps:
     - name: Install FOSSA CLI
-      env:
-        # renovate: datasource=github-releases depName=fossas/fossa-cli
-        FOSSA_CLI_VERSION: 3.10.2
-      run: |
-        if ! command -v fossa &> /dev/null
-        then
-          echo "FOSSA CLI not found, installing version=${FOSSA_CLI_VERSION}..."
-          curl \
-            -sSL \
-            -H 'Cache-Control: no-cache' \
-            https://github.com/fossas/fossa-cli/releases/download/v${FOSSA_CLI_VERSION}/fossa_${FOSSA_CLI_VERSION}_linux_amd64.tar.gz | \
-            tar -xz -C /usr/local/bin
-        else
-          echo "FOSSA CLI is already installed"
-        fi
-      shell: bash
+      uses: .github/actions/fossa/setup
+      # uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
     - name: Run FOSSA analyze
       env:
         BRANCH: ${{ inputs.branch }}
