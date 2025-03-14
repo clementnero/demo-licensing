@@ -2,14 +2,13 @@ version: 3
 
 project:
   # id: sandbox
-  id: test
+  id: test-01
   policyId: 212700 # Camunda8 Distribution
   labels:
   - Demo
-  team: Admin
-  teams:
-  - Admin
-  - Infra Team
+  team: 'Admin'
+  # teams:
+  # - 'Admin'
   url: https://github.com/clementnero/demo-licensing
 
 maven:
