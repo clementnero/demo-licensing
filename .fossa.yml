@@ -5,8 +5,9 @@ project:
   id: test
   policyId: 212700 # Camunda8 Distribution
   labels:
-    - Demo
+  - Demo
   teams:
+  - Admin
   - Infra Team
   url: https://github.com/clementnero/demo-licensing
 
