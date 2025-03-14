@@ -4,30 +4,12 @@ on:
   push:
 
 jobs:
-  analyse:
-    name: Analyse dependencies
+  check:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Install FOSSA CLI
-      env:
-        # renovate: datasource=github-releases depName=fossas/fossa-cli
-        FOSSA_CLI_VERSION: 3.10.2
-      run: |
-        curl -L \
-            https://github.com/fossas/fossa-cli/releases/download/v${FOSSA_CLI_VERSION}/fossa_${FOSSA_CLI_VERSION}_linux_amd64.tar.gz \
-            -o fossa.tar.gz
-        tar -xzf fossa.tar.gz fossa
-        sudo mv fossa /usr/local/bin/fossa
-        rm fossa.tar.gz
-    - name: Run depdendency analysis
-      env:
-        BRANCH: ${{ github.head_ref || github.ref_name }}
-        FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
-        HEAD_REVISION: ${{ github.sha }}
-      run: |
-        env
-        fossa analyze . \
-          --strict \
-          --branch "${BRANCH}" \
-          --revision "${HEAD_REVISION}"
+    - uses: .github/actions/fossa/analyze
+      with:
+        api-key: ${{ secrets.FOSSA_API_KEY }}
+        branch: ${{ github.head_ref || github.ref_name }}
+        revision-id: ${{ github.sha }}
