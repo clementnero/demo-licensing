@@ -2,6 +2,12 @@ version: 3
 
 project:
   id: sandbox
+  policyId: 212700 # Camunda8 Distribution
+  labels:
+    - Demo
+  teams:
+  - Infra Team
+  url: https://github.com/clementnero/demo-licensing
 
 maven:
   scope-exclude:
