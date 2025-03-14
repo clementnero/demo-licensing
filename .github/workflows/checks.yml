@@ -1,0 +1,55 @@
+# name: License Check
+
+# on:
+#   pull_request:
+
+# jobs:
+#   check:
+#     env:
+#       BASE_REVISION: ${{ github.event.pull_request.base.sha }}
+#       HEAD_REVISION: ${{ github.event.pull_request.head.sha }}
+#     # TODO: use self-hosted runner if possible
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Install FOSSA CLI
+#       env:
+#         # renovate: datasource=github-releases depName=fossas/fossa-cli
+#         FOSSA_CLI_VERSION: 3.10.2
+#       run: |
+#         curl -L \
+#             https://github.com/fossas/fossa-cli/releases/download/v${FOSSA_CLI_VERSION}/fossa_${FOSSA_CLI_VERSION}_linux_amd64.tar.gz \
+#             -o fossa.tar.gz
+#         tar -xzf fossa.tar.gz fossa
+#         sudo mv fossa /usr/local/bin/fossa
+#         rm fossa.tar.gz
+#     - name: Analyse project dependencies
+#       env:
+#         BRANCH: ${{ github.head_ref }}
+#         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+#       run: |
+#         fossa analyze . \
+#           --strict \
+#           --branch "${BRANCH}" \
+#           --revision "${HEAD_REVISION}"
+#     - name: Check for new license compliance issues (vs base)
+#       id: check
+#       env:
+#         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+#       run: |
+#         fossa test . \
+#             --diff "${BASE_REVISION}" \
+#             --revision "${HEAD_REVISION}"
+#     - name: New license issue(s) found
+#       if: failure() && steps.check.conclusion == 'failure'
+#       env:
+#         FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+#       run: |
+#         dependencies=$(
+#             fossa test . \
+#                 --diff "${BASE_REVISION}" \
+#                 --revision "${HEAD_REVISION}" \
+#                 --format json 2>/dev/null | \
+#             jq -r '[.issues[].revisionId] | unique | join("%0A")'
+#         )
+#         echo "::error::Review new license findings on fossa.com (details in logs) for the following dependencies: dependencies:%0A${dependencies}"
