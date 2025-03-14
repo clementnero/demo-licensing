@@ -24,7 +24,7 @@ runs:
         BRANCH: ${{ inputs.branch }}
         CONFIGURATION_FILE: ${{ inputs.configuration-file }}
         FOSSA_API_KEY: ${{ inputs.api-key }}
-        REVISION_ID: ${{ inputs.analyze-revision-id }}
+        REVISION_ID: ${{ inputs.revision-id }}
       run: |
         fossa analyze . \
           --strict \
