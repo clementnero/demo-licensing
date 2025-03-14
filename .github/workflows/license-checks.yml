@@ -14,8 +14,5 @@ jobs:
       uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
       with:
         api-key: ${{ secrets.FOSSA_API_KEY }}
-        branch: ${{ github.head_ref || github.ref_name }}
-        revision-id: ${{ github.sha }}
-    - run: |
-        echo github.head_ref=${{ github.head_ref }}
-        echo github.ref_name=${{ github.ref_name }}
+        branch: ${{ github.ref_name }} # populated for push events
+        revision-id: ${{ github.sha }} # populated for push events
