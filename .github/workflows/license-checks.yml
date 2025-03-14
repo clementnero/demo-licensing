@@ -8,10 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Install FOSSA CLI
+    - name: Setup fossa-cli
       uses: clementnero/demo-licensing/.github/actions/fossa/setup@add-licensing-checks
-    - uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
+    - name: Analyze project
+      uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
       with:
         api-key: ${{ secrets.FOSSA_API_KEY }}
         branch: ${{ github.head_ref || github.ref_name }}
         revision-id: ${{ github.sha }}
+    - run: |
+        echo github.head_ref=${{ github.head_ref }}
+        echo github.ref_name=${{ github.ref_name }}
