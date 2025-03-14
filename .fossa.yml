@@ -6,6 +6,7 @@ project:
   policyId: 212700 # Camunda8 Distribution
   labels:
   - Demo
+  team: Admin
   teams:
   - Admin
   - Infra Team
