@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install FOSSA CLI
+      uses: clementnero/demo-licensing/.github/actions/fossa/setup@add-licensing-checks
     - uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
       with:
         api-key: ${{ secrets.FOSSA_API_KEY }}

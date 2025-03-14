@@ -15,8 +15,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install FOSSA CLI
-      uses: clementnero/demo-licensing/.github/actions/fossa/setup@add-licensing-checks
     - name: Run FOSSA analyze
       env:
         BRANCH: ${{ inputs.branch }}
