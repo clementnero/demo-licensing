@@ -1,7 +1,8 @@
 version: 3
 
 project:
-  id: sandbox
+  # id: sandbox
+  id: test
   policyId: 212700 # Camunda8 Distribution
   labels:
     - Demo
