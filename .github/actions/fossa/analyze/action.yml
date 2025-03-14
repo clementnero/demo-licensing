@@ -9,6 +9,10 @@ inputs:
   branch:
     description: Name of the branch to be scanned
     required: true
+  configuration-file:
+    description: Path to the FOSSA configuration file
+    required: false
+    default: .fossa.yml
   revision-id:
     description: ID of the revision to be scanned
     required: true
@@ -18,11 +22,13 @@ runs:
     - name: Run FOSSA analyze
       env:
         BRANCH: ${{ inputs.branch }}
+        CONFIGURATION_FILE: ${{ inputs.configuration-file }}
         FOSSA_API_KEY: ${{ inputs.api-key }}
         REVISION_ID: ${{ inputs.analyze-revision-id }}
       run: |
         fossa analyze . \
           --strict \
+          --config "${CONFIGURATION_FILE}" \
           --branch "${BRANCH}" \
           --revision "${REVISION_ID}"
       shell: bash
