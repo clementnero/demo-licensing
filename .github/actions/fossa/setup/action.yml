@@ -13,7 +13,6 @@ runs:
   steps:
     - name: Install FOSSA CLI
       env:
-        # renovate: datasource=github-releases depName=fossas/fossa-cli
         FOSSA_CLI_VERSION: ${{ inputs.version }}
       run: |
         if ! command -v fossa &> /dev/null
