@@ -30,25 +30,30 @@ jobs:
       if: steps.product.outputs.context != ''
       env:
         PRODUCT_CONTEXT: ${{ steps.product.outputs.context }}
-        SAAS_MAVEN_PACKAGES_TO_EXCLUDE: |
-          - type: maven
-            path: restapi
-            target: io.camunda:modeler-restapi-self-managed
-        SELF_MANAGED_MAVEN_PACKAGES_TO_EXCLUDE: |
+        SAAS_MAVEN_PACKAGES: |
           - type: maven
             path: restapi
             target: io.camunda:modeler-restapi-saas
+        SELF_MANAGED_MAVEN_PACKAGES: |
+          - type: maven
+            path: restapi
+            target: io.camunda:modeler-restapi-self-managed
       run: |
         set -x
+        MAVEN_PACKAGES_TO_EXCLUDE=""
+
         if [[ "$PRODUCT_CONTEXT" == "saas" ]]; then
-          echo "$SAAS_MAVEN_PACKAGES_TO_EXCLUDE"
+          MAVEN_PACKAGES_TO_EXCLUDE="${SELF_MANAGED_MAVEN_PACKAGES}"
         elif [[ "$PRODUCT_CONTEXT" == "self-managed" ]]; then
-          echo "$SELF_MANAGED_MAVEN_PACKAGES_TO_EXCLUDE"
-          yq -i \
-            '.targets.exclude += env(SAAS_MAVEN_PACKAGES_TO_EXCLUDE)' \
-            .fossa.yml
-          cat .fossa.yml
+          MAVEN_PACKAGES_TO_EXCLUDE="${SAAS_MAVEN_PACKAGES}"
         fi
+
+        yq -i \
+          '.targets.exclude += env(SELF_MANAGED_MAVEN_PACKAGES)' \
+          .fossa.yml
+
+        cat .fossa.yml
+
      # - name: Analyze project
     #   uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
     #   with:
