@@ -39,6 +39,7 @@ jobs:
             path: restapi
             target: io.camunda:modeler-restapi-saas
       run: |
+        set -x
         if [[ "$PRODUCT_CONTEXT" == "saas" ]]; then
           echo "$SAAS_MAVEN_PACKAGES_TO_EXCLUDE"
         elif [[ "$PRODUCT_CONTEXT" == "self-managed" ]]; then
@@ -46,6 +47,7 @@ jobs:
           yq -i \
             '.targets.exclude += env(SAAS_MAVEN_PACKAGES_TO_EXCLUDE)' \
             .fossa.yml
+          cat .fossa.yml
         fi
      # - name: Analyze project
     #   uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
