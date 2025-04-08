@@ -13,3 +13,10 @@ maven:
   - provided
   - system
   - test
+
+
+targets:
+  exclude:
+  - type: maven
+    path: restapi
+    target: io.camunda:test
