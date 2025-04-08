@@ -39,7 +39,7 @@ jobs:
             path: restapi
             target: io.camunda:modeler-restapi-self-managed
       run: |
-        set -x
+        # Exclude Maven packages not relevant to the current product context
         if [[ "$PRODUCT_CONTEXT" == "saas" ]]; then
           echo "$SELF_MANAGED_MAVEN_PACKAGES" | yq -i '.targets.exclude += load_str("/dev/stdin")' .fossa.yml
         elif [[ "$PRODUCT_CONTEXT" == "self-managed" ]]; then
