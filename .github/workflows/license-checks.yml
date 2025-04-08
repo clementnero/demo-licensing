@@ -44,7 +44,7 @@ jobs:
           echo "$SELF_MANAGED_MAVEN_PACKAGES" | yq -i '.targets.exclude += load("/dev/stdin")' .fossa.yml
         elif [[ "$PRODUCT_CONTEXT" == "self-managed" ]]; then
           echo "$SAAS_MAVEN_PACKAGES" | yq -i '.targets.exclude += load("/dev/stdin")' .fossa.yml
-        fig
+        fi
         cat .fossa.yml
 
      # - name: Analyze project
