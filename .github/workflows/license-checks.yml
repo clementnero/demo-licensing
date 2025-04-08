@@ -29,6 +29,7 @@ jobs:
     - name: Update FOSSA configuration with product context ${{ steps.product.outputs.context }}
       if: steps.product.outputs.context != ''
       env:
+        PRODUCT_CONTEXT: ${{ steps.product.outputs.context }}
         SAAS_MAVEN_PACKAGES_TO_EXCLUDE: |
           - type: maven
             path: restapi
@@ -38,11 +39,15 @@ jobs:
             path: restapi
             target: io.camunda:modeler-restapi-saas
       run: |
-        echo ${{ steps.product.outputs.context }}
-        yq -i \
-          '.project.modules.module += "./.."' \
-          .fossa.yml
-    # - name: Analyze project
+        if [[ "$PRODUCT_CONTEXT" == "saas" ]]; then
+          echo "$SAAS_MAVEN_PACKAGES_TO_EXCLUDE"
+        elif [[ "$PRODUCT_CONTEXT" == "self-managed" ]]; then
+          echo "$SELF_MANAGED_MAVEN_PACKAGES_TO_EXCLUDE"
+          yq -i \
+            '.targets.exclude += env(SAAS_MAVEN_PACKAGES_TO_EXCLUDE)' \
+            .fossa.yml
+        fi
+     # - name: Analyze project
     #   uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
     #   with:
     #     api-key: ${{ secrets.FOSSA_API_KEY }}
