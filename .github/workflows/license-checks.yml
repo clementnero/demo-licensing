@@ -2,6 +2,11 @@ name: License Check
 
 on:
   push:
+    branches:
+    - main
+    - 'v*'
+    tags: 
+    - '**'
 
 jobs:
   check:
@@ -14,5 +19,5 @@ jobs:
       uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
       with:
         api-key: ${{ secrets.FOSSA_API_KEY }}
-        branch: ${{ github.ref_name }} # populated for push events
-        revision-id: ${{ github.sha }} # populated for push events
+        branch: ${{ github.ref_name }} # available for push events
+        revision-id: ${{ github.sha }} # available for push events
