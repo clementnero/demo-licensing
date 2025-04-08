@@ -49,7 +49,7 @@ jobs:
         fi
 
         yq -i \
-          '.targets.exclude += env(SELF_MANAGED_MAVEN_PACKAGES)' \
+          '.targets.exclude += env(MAVEN_PACKAGES_TO_EXCLUDE)' \
           .fossa.yml
 
         cat .fossa.yml
