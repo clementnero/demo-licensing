@@ -41,10 +41,10 @@ jobs:
       run: |
         # Exclude Maven packages not relevant to the current product context
         if [[ "$PRODUCT_CONTEXT" == "saas" ]]; then
-          echo "$SELF_MANAGED_MAVEN_PACKAGES" | yq -i '.targets.exclude += load_str("/dev/stdin")' .fossa.yml
+          echo "$SELF_MANAGED_MAVEN_PACKAGES" | yq -i '.targets.exclude += load("/dev/stdin")' .fossa.yml
         elif [[ "$PRODUCT_CONTEXT" == "self-managed" ]]; then
-          echo "$SAAS_MAVEN_PACKAGES" | yq -i '.targets.exclude += load_str("/dev/stdin")' .fossa.yml
-        fi
+          echo "$SAAS_MAVEN_PACKAGES" | yq -i '.targets.exclude += load("/dev/stdin")' .fossa.yml
+        fig
         cat .fossa.yml
 
      # - name: Analyze project
