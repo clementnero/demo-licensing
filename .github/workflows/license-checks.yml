@@ -25,7 +25,7 @@ jobs:
             ''
           }}
       run: |
-        echo "context=${CONTEXT}" >> $GITHUB_ENV
+        echo "context=${CONTEXT}" >> $GITHUB_OUTPUT
     - name: Update FOSSA configuration with product context ${{ steps.product.outputs.context }}
       if: steps.product.outputs.context != ''
       env:
@@ -38,7 +38,7 @@ jobs:
             path: restapi
             target: io.camunda:modeler-restapi-saas
       run: |
-        echo ${{ steps.product.outputs.context}}
+        echo ${{ steps.product.outputs.context }}
         yq -i \
           '.project.modules.module += "./.."' \
           .fossa.yml
