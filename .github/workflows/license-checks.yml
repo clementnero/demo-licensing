@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - self-managed/*
     tags:
     - '*'
 
@@ -14,9 +15,33 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup fossa-cli
       uses: clementnero/demo-licensing/.github/actions/fossa/setup@add-licensing-checks
-    - name: Analyze project
-      uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
-      with:
-        api-key: ${{ secrets.FOSSA_API_KEY }}
-        branch: ${{ github.ref_name }} # available for push events
-        revision-id: ${{ github.sha }} # available for push events
+    - name: Get product context
+      id: product
+      env:
+        PRODUCT_CONTEXT: >
+          ${{
+            github.ref_name.startsWith('saas/') && 'saas' || 
+            github.ref_name.startsWith('self-managed/') && 'self-managed' ||
+            ''
+          }}
+      run: |
+        echo "context=${CONTEXT}" >> $GITHUB_ENV
+    - name: Update FOSSA configuration with product context ${{ steps.product.outputs.context }}
+      if: steps.product.outputs.context != ''
+      run: |
+        yq -i \
+          '.project.modules.module += "./.."' \
+          .fossa.yml
+    # - name: Analyze project
+    #   uses: clementnero/demo-licensing/.github/actions/fossa/analyze@add-licensing-checks
+    #   with:
+    #     api-key: ${{ secrets.FOSSA_API_KEY }}
+    #     branch: ${{ github.ref_name }} # available for push events
+    #     revision-id: ${{ github.sha }} # available for push events
+
+# targets:
+#   exclude:
+#   # qa
+#   - type: maven
+#     path: bom/
+#     target: io.camunda:camunda-qa
