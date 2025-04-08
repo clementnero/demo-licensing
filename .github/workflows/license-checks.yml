@@ -40,19 +40,11 @@ jobs:
             target: io.camunda:modeler-restapi-self-managed
       run: |
         set -x
-        MAVEN_PACKAGES_TO_EXCLUDE=""
-
         if [[ "$PRODUCT_CONTEXT" == "saas" ]]; then
-          MAVEN_PACKAGES_TO_EXCLUDE="${SELF_MANAGED_MAVEN_PACKAGES}"
+          echo "$SELF_MANAGED_MAVEN_PACKAGES" | yq -i '.targets.exclude += .' .fossa.yml
         elif [[ "$PRODUCT_CONTEXT" == "self-managed" ]]; then
-          MAVEN_PACKAGES_TO_EXCLUDE="${SAAS_MAVEN_PACKAGES}"
+          echo "$SAAS_MAVEN_PACKAGES" | yq -i '.targets.exclude += .' .fossa.yml
         fi
-
-        export MAVEN_PACKAGES_TO_EXCLUDE="${MAVEN_PACKAGES_TO_EXCLUDE}"        
-        yq -i \
-          '.targets.exclude += env(MAVEN_PACKAGES_TO_EXCLUDE)' \
-          .fossa.yml
-
         cat .fossa.yml
 
      # - name: Analyze project
