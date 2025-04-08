@@ -28,6 +28,15 @@ jobs:
         echo "context=${CONTEXT}" >> $GITHUB_ENV
     - name: Update FOSSA configuration with product context ${{ steps.product.outputs.context }}
       if: steps.product.outputs.context != ''
+      env:
+        SAAS_MAVEN_PACKAGES_TO_EXCLUDE: |
+          - type: maven
+            path: restapi
+            target: io.camunda:modeler-restapi-self-managed
+        SELF_MANAGED_MAVEN_PACKAGES_TO_EXCLUDE: |
+          - type: maven
+            path: restapi
+            target: io.camunda:modeler-restapi-saas
       run: |
         echo ${{ steps.product.outputs.context}}
         yq -i \
