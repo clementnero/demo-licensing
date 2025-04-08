@@ -48,6 +48,7 @@ jobs:
           MAVEN_PACKAGES_TO_EXCLUDE="${SAAS_MAVEN_PACKAGES}"
         fi
 
+        export MAVEN_PACKAGES_TO_EXCLUDE="${MAVEN_PACKAGES_TO_EXCLUDE}"        
         yq -i \
           '.targets.exclude += env(MAVEN_PACKAGES_TO_EXCLUDE)' \
           .fossa.yml
